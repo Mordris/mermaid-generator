@@ -1,8 +1,14 @@
 .git
 .gitignore
+.gitattributes
 .claude
 node_modules
 README.md
+LICENSE
+docs
+Makefile
+package.json
+package-lock.json
 *.log
 Dockerfile
 docker-compose.yml

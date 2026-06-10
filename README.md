@@ -27,38 +27,108 @@ backend, no uploads.
 
 ## Run it
 
-### Docker (recommended)
+### Prerequisites
 
-Served by nginx on an uncommon host port (**8473**) chosen to avoid clashing with the
-usual dev ports:
+You only need **one** of these toolchains:
+
+| To run with… | You need | Notes |
+| --- | --- | --- |
+| **Docker** (recommended) | [Docker Engine](https://docs.docker.com/engine/install/) + Docker Compose v2 (bundled with **Docker Desktop** on Windows/macOS) | `docker compose version` should print v2.x |
+| **`make` shortcuts** | The above, plus `make` | Preinstalled on macOS/Linux; on Windows use `choco install make`, WSL, or just use the npm/Docker commands |
+| **`npm` shortcuts** | [Node.js](https://nodejs.org/) 18+ (for `npm`) **and** Docker | Cross-platform wrappers around the Docker commands |
+| **No-build static server** | Any static file server — Node, Python 3, PHP, … | No Docker needed; great for a quick look |
+
+Also required at runtime:
+
+- A **modern browser** (Chrome, Edge, Firefox, Safari).
+- An **internet connection** — the Mermaid library is loaded from a CDN at runtime
+  (jsdelivr → unpkg → esm.sh fallbacks). Your diagrams themselves are **never uploaded**;
+  all rendering and export happen locally in the browser.
+
+> Want a fully offline/air-gapped image with zero CDN dependency? See
+> [Offline build](#offline-build).
+
+### Quick start
 
 ```bash
-docker compose up -d --build
-# open http://localhost:8473
+git clone https://github.com/Mordris/mermaid-generator.git
+cd mermaid-generator
+docker compose up -d --build      # → http://localhost:8473
 ```
 
-Pick a different port without editing any file:
+That's it — open **http://localhost:8473**. To stop: `docker compose down`.
+
+### Command cheat-sheet
+
+Every row does the same thing three ways — pick whichever you have installed:
+
+| Action | Docker Compose | `make` | `npm` |
+| --- | --- | --- | --- |
+| **Start** (build + run) | `docker compose up -d --build` | `make up` | `npm start` |
+| **Stop** (remove container) | `docker compose down` | `make down` | `npm stop` |
+| **Restart** | `docker compose restart` | `make restart` | `npm run restart` |
+| **Rebuild** (after code changes) | `docker compose up -d --build --force-recreate` | `make rebuild` | `npm run rebuild` |
+| **View logs** | `docker compose logs -f` | `make logs` | `npm run logs` |
+| **Status** | `docker compose ps` | `make ps` | `npm run status` |
+| **Remove image too** | `docker compose down --rmi local` | `make clean` | `npm run clean` |
+| **No-Docker dev server** | — | `make dev` | `npm run dev` |
+
+Run `make` with no arguments to see the available targets.
+
+### Choosing a port
+
+The host port defaults to **8473** (an uncommon, unassigned port chosen to avoid clashing
+with the usual `3000`/`5000`/`8000`/`8080`/`8888` dev ports). Override it without editing
+any file:
 
 ```bash
-MERMAID_PORT=12345 docker compose up -d --build   # http://localhost:12345
+MERMAID_PORT=12345 docker compose up -d --build   # → http://localhost:12345
+make up PORT=12345                                # same, via make
 ```
 
-Stop it with `docker compose down`.
+### Run without Docker (static server)
 
-### Static server (no Docker)
-
-It's a plain static site — any HTTP server works (the ES-module import of Mermaid from the
-CDN needs `http://`, not `file://`):
+It's a plain static site, so any HTTP server works (the ES-module import of Mermaid needs
+`http://`, not `file://`):
 
 ```bash
-npx http-server -p 4321 -c-1
-# then open http://localhost:4321
+# Node
+npx http-server -p 4321 -c-1            # or:  make dev  /  npm run dev
+
+# Python 3
+python -m http.server 4321
+
+# PHP
+php -S localhost:4321
 ```
 
-> **Internet note:** Mermaid itself is loaded from a CDN at runtime (with jsdelivr →
-> unpkg → esm.sh fallbacks). If all CDNs are unreachable, the app shows a clear error
-> with a **Retry** button. Your diagrams are never uploaded — all rendering and export
-> happen in the browser.
+Then open **http://localhost:4321**.
+
+### Run without Compose (plain Docker)
+
+```bash
+docker build -t mermaid-studio .
+docker run -d --name mermaid-studio -p 8473:80 mermaid-studio
+# stop:  docker rm -f mermaid-studio
+```
+
+### Offline build
+
+The container needs outbound internet only because Mermaid is fetched from a CDN by the
+browser. If you need a self-contained image, vendor the library locally:
+
+1. Download `mermaid.esm.min.mjs` (v11) into the project folder.
+2. Point the first entry of `MERMAID_SOURCES` in `app.js` at `./mermaid.esm.min.mjs`.
+3. Add the file to the `COPY` line in the `Dockerfile`, then rebuild.
+
+### Troubleshooting
+
+- **Port already in use** → pick another port (see [Choosing a port](#choosing-a-port)).
+- **Stale UI after a rebuild** → hard-refresh once (`Ctrl/Cmd + Shift + R`); the server
+  sends `no-cache` headers, so new visitors always get fresh code.
+- **"Couldn't load the Mermaid engine"** → you're offline or a corporate proxy is blocking
+  the CDNs; reconnect and click **Retry**, or do an [offline build](#offline-build).
+- **`make: command not found` (Windows)** → use the **Docker Compose** or **npm** column instead.
 
 ## How the PNG export works
 
@@ -95,3 +165,5 @@ The app is built to fail loudly but never crash:
 | `Dockerfile` | nginx static-server image |
 | `nginx.conf` | MIME types (incl. `.mjs`), gzip, caching |
 | `docker-compose.yml` | Runs on host port 8473 (override via `MERMAID_PORT`) |
+| `Makefile` | `make up/down/restart/rebuild/logs/ps/dev/clean` shortcuts |
+| `package.json` | `npm start/stop/restart/rebuild/logs/status/clean/dev` shortcuts |

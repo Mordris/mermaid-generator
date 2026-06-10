@@ -1,0 +1,22 @@
+{
+  "name": "mermaid-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dark-themed, client-side web app that turns Mermaid diagram code into downloadable PNG/JPEG/SVG.",
+  "license": "MIT",
+  "homepage": "https://github.com/Mordris/mermaid-generator",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mordris/mermaid-generator.git"
+  },
+  "scripts": {
+    "start": "docker compose up -d --build",
+    "stop": "docker compose down",
+    "restart": "docker compose restart",
+    "rebuild": "docker compose up -d --build --force-recreate",
+    "logs": "docker compose logs -f",
+    "status": "docker compose ps",
+    "clean": "docker compose down --rmi local --remove-orphans",
+    "dev": "npx --yes http-server -p 4321 -c-1"
+  }
+}
