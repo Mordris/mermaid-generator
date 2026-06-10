@@ -6,6 +6,12 @@ backend, no uploads.
 
 ![Mermaid Studio](https://img.shields.io/badge/mermaid-11-7c9eff) ![offline](https://img.shields.io/badge/runs-in--browser-56d4c4)
 
+## Screenshots
+
+| Dark theme · transparent background | Sequence diagram · white background |
+| :---: | :---: |
+| ![Flowchart with the dark UI and transparent (checkerboard) export background](docs/screenshots/screenshot_flowchart_diagram.png) | ![Sequence diagram previewed on a white export background](docs/screenshots/screenshot_sequence_diagram.png) |
+
 ## Features
 
 - **Live preview** with 250 ms debounced re-render; the last good diagram stays on screen while you fix syntax errors.
