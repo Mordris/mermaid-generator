@@ -1,0 +1,18 @@
+# Mermaid Studio in a container.
+#
+# The host port defaults to 8473 — an uncommon, unassigned port chosen to
+# avoid clashing with the usual suspects (3000/5000/8000/8080/8888 etc.).
+# Override it without editing this file:
+#
+#     MERMAID_PORT=12345 docker compose up -d
+#
+# Then open http://localhost:8473  (or your chosen port).
+
+services:
+  mermaid-studio:
+    build: .
+    image: mermaid-studio:latest
+    container_name: mermaid-studio
+    ports:
+      - "${MERMAID_PORT:-8473}:80"
+    restart: unless-stopped

@@ -1,0 +1,26 @@
+# Local tooling / editor config (may contain local paths)
+.claude/
+.vscode/
+.idea/
+
+# Dependencies (none currently, but just in case)
+node_modules/
+
+# Logs & temp
+*.log
+*.tmp
+tmp/
+
+# OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Env files — never commit secrets
+.env
+.env.*
+*.local
+
+# Build output
+dist/
+build/

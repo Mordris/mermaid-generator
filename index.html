@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mermaid → PNG Studio</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+          <rect x="8.5" y="14" width="7" height="7" rx="1.5"></rect>
+          <path d="M6.5 10v2.5a1.5 1.5 0 0 0 1.5 1.5h0M17.5 10v2.5a1.5 1.5 0 0 1-1.5 1.5h0"></path>
+        </svg>
+      </span>
+      <div class="brand-text">
+        <h1>Mermaid Studio</h1>
+        <p>code → downloadable image</p>
+      </div>
+    </div>
+
+    <div class="topbar-controls">
+      <label class="ctrl">
+        <span>Example</span>
+        <select id="exampleSelect" title="Load an example diagram">
+          <option value="flowchart">Flowchart</option>
+          <option value="sequence">Sequence</option>
+          <option value="class">Class</option>
+          <option value="state">State</option>
+          <option value="er">ER Diagram</option>
+          <option value="gantt">Gantt</option>
+          <option value="pie">Pie</option>
+          <option value="mindmap">Mindmap</option>
+          <option value="journey">User Journey</option>
+          <option value="git">Git Graph</option>
+        </select>
+      </label>
+
+      <label class="ctrl">
+        <span>Theme</span>
+        <select id="themeSelect" title="Mermaid render theme">
+          <option value="dark" selected>Dark</option>
+          <option value="default">Default</option>
+          <option value="neutral">Neutral</option>
+          <option value="forest">Forest</option>
+          <option value="base">Base</option>
+        </select>
+      </label>
+    </div>
+  </header>
+
+  <!-- Library load / fatal overlay -->
+  <div id="libOverlay" class="lib-overlay">
+    <div class="lib-card">
+      <div class="lib-spinner" id="libSpinner"></div>
+      <div class="lib-title" id="libTitle">Loading Mermaid engine…</div>
+      <div class="lib-msg" id="libMsg">Fetching the rendering library.</div>
+      <button id="libRetry" class="btn-primary" hidden>Retry</button>
+    </div>
+  </div>
+
+  <main class="layout">
+    <!-- Editor -->
+    <section class="pane editor-pane">
+      <div class="pane-head">
+        <span class="pane-title">Mermaid code</span>
+        <div class="pane-actions">
+          <button id="formatBtn" class="btn-ghost" title="Tidy up indentation">Format</button>
+          <button id="clearBtn" class="btn-ghost" title="Clear editor">Clear</button>
+          <button id="copyBtn" class="btn-ghost" title="Copy code">Copy</button>
+        </div>
+      </div>
+      <div class="editor-wrap">
+        <textarea id="code" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
+      </div>
+      <div id="status" class="status status-ok">Ready</div>
+    </section>
+
+    <div class="gutter" id="gutterLeft" role="separator" aria-orientation="vertical"
+         tabindex="0" title="Drag to resize (double-click to reset)"></div>
+
+    <!-- Preview -->
+    <section class="pane preview-pane">
+      <div class="pane-head">
+        <span class="pane-title">Preview</span>
+        <div class="zoom-controls">
+          <button id="zoomOut" class="btn-icon" title="Zoom out">−</button>
+          <span id="zoomLabel">100%</span>
+          <button id="zoomIn" class="btn-icon" title="Zoom in">+</button>
+          <button id="zoomFit" class="btn-ghost" title="Reset zoom">Fit</button>
+        </div>
+      </div>
+      <div id="previewViewport" class="preview-viewport">
+        <div id="previewStage" class="preview-stage">
+          <div id="diagram" class="diagram"></div>
+        </div>
+        <div id="errorOverlay" class="error-overlay" hidden>
+          <div class="error-card">
+            <span class="error-title">Syntax error</span>
+            <pre id="errorText"></pre>
+          </div>
+        </div>
+        <div class="pan-hint" id="panHint">drag to pan · scroll to zoom</div>
+      </div>
+    </section>
+
+    <div class="gutter" id="gutterRight" role="separator" aria-orientation="vertical"
+         tabindex="0" title="Drag to resize (double-click to reset)"></div>
+
+    <!-- Export sidebar -->
+    <aside class="pane export-pane">
+      <div class="pane-head">
+        <span class="pane-title">Export</span>
+      </div>
+      <div class="export-body">
+        <div class="field">
+          <label for="formatSelect">Format</label>
+          <select id="formatSelect">
+            <option value="png" selected>PNG (raster)</option>
+            <option value="jpeg">JPEG (raster)</option>
+            <option value="svg">SVG (vector)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="scaleRange">Resolution scale <span id="scaleVal" class="muted">3×</span></label>
+          <input type="range" id="scaleRange" min="1" max="6" step="1" value="3" />
+          <div id="dimHint" class="dim-hint muted">—</div>
+        </div>
+
+        <div class="field">
+          <label>Background</label>
+          <div class="bg-options" id="bgOptions">
+            <button class="bg-chip is-active" data-bg="transparent">
+              <span class="bg-swatch swatch-transparent"></span>Transparent
+            </button>
+            <button class="bg-chip" data-bg="#0d1117">
+              <span class="bg-swatch" style="background:#0d1117"></span>Dark
+            </button>
+            <button class="bg-chip" data-bg="#ffffff">
+              <span class="bg-swatch" style="background:#fff"></span>White
+            </button>
+            <button class="bg-chip" data-bg="custom">
+              <span class="bg-swatch" id="customSwatch"></span>Custom
+            </button>
+          </div>
+          <input type="color" id="bgColor" value="#1e293b" hidden />
+        </div>
+
+        <div class="field">
+          <label for="paddingRange">Padding <span id="padVal" class="muted">16px</span></label>
+          <input type="range" id="paddingRange" min="0" max="120" step="4" value="16" />
+        </div>
+
+        <div class="field">
+          <label for="filename">File name</label>
+          <input type="text" id="filename" value="diagram" />
+        </div>
+
+        <button id="downloadBtn" class="btn-primary">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Download image
+        </button>
+        <button id="copyImgBtn" class="btn-secondary" title="Copy PNG to clipboard">Copy image to clipboard</button>
+
+        <p class="export-note muted">
+          Rendering happens entirely in your browser. Nothing is uploaded.
+        </p>
+      </div>
+    </aside>
+  </main>
+
+  <!-- offscreen canvas for rasterizing -->
+  <canvas id="exportCanvas" hidden></canvas>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
