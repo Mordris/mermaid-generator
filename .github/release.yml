@@ -1,0 +1,38 @@
+# Configures GitHub's auto-generated release notes.
+# Categories are matched by the labels on each merged PR.
+changelog:
+  exclude:
+    labels:
+      - ignore-for-release
+      - duplicate
+      - invalid
+    authors:
+      - dependabot
+  categories:
+    - title: 💥 Breaking Changes
+      labels:
+        - breaking-change
+    - title: 🚀 Features
+      labels:
+        - enhancement
+        - feature
+    - title: 🐛 Fixes
+      labels:
+        - bug
+        - fix
+    - title: ⚡ Performance
+      labels:
+        - performance
+    - title: 📝 Documentation
+      labels:
+        - documentation
+        - docs
+    - title: 🏗️ Build, CI & Maintenance
+      labels:
+        - build
+        - ci
+        - chore
+        - dependencies
+    - title: 🔃 Other Changes
+      labels:
+        - "*"

@@ -17,12 +17,16 @@ export MERMAID_PORT = $(PORT)
 
 .DEFAULT_GOAL := help
 
-.PHONY: help up down restart rebuild logs ps dev clean
+.PHONY: help setup up down restart rebuild logs ps dev clean
 
 help: ## Show this help
 	@echo "Mermaid Studio — make targets:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2}'
+
+setup: ## Register the Conventional Commits message template (run once)
+	git config commit.template .gitmessage
+	@echo "Commit template registered. 'git commit' will now pre-fill it."
 
 up: ## Build and start (detached)
 	docker compose up -d --build

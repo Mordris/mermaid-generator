@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-smoke-test:
+    name: Build image & smoke test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t mermaid-studio:ci .
+
+      - name: Validate nginx config
+        run: docker run --rm mermaid-studio:ci nginx -t
+
+      - name: Run container
+        run: docker run -d --name studio -p 8473:80 mermaid-studio:ci
+
+      - name: Wait for the server
+        run: |
+          for i in $(seq 1 20); do
+            if curl -fsS http://localhost:8473/ >/dev/null; then
+              echo "Server is up." && exit 0
+            fi
+            sleep 1
+          done
+          echo "Server did not come up in time." && docker logs studio && exit 1
+
+      - name: Smoke test — key assets serve correctly
+        run: |
+          set -euo pipefail
+          # index.html contains the editor
+          curl -fsS http://localhost:8473/ | grep -q 'id="code"'
+          # app.js is served with a JS content type
+          ctype=$(curl -fsSI http://localhost:8473/app.js | tr -d '\r' | awk -F': ' 'tolower($1)=="content-type"{print $2}')
+          echo "app.js Content-Type: $ctype"
+          echo "$ctype" | grep -qi 'javascript'
+          # styles.css is reachable
+          curl -fsS http://localhost:8473/styles.css >/dev/null
+
+      - name: Tear down
+        if: always()
+        run: docker rm -f studio || true
+
+  guard-secrets:
+    name: Guard against committed secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

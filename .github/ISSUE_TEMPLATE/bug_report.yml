@@ -1,0 +1,73 @@
+name: 🐛 Bug report
+description: Report something that isn't working as expected
+title: "fix: <short description>"
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug! Please fill out the sections
+        below so we can reproduce and fix it quickly.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: A clear description of the bug.
+      placeholder: When I click "Copy image to clipboard", …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Include the Mermaid code if the bug is diagram-specific.
+      value: |
+        1. Go to …
+        2. Paste this diagram:
+           ```mermaid
+           flowchart TD
+             A --> B
+           ```
+        3. Click …
+        4. See error
+    validations:
+      required: true
+  - type: dropdown
+    id: run-mode
+    attributes:
+      label: How are you running it?
+      options:
+        - Docker (docker compose)
+        - Static server (npm run dev / http-server)
+        - Other static host
+        - Not sure
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser & OS
+      placeholder: "Chrome 124 on Windows 11"
+    validations:
+      required: true
+  - type: textarea
+    id: console
+    attributes:
+      label: Console errors
+      description: Open DevTools → Console and paste any errors.
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I searched existing issues and this isn't a duplicate
+          required: true
+        - label: I'm on the latest version of the `main` branch
+          required: false

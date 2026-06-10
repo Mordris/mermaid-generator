@@ -10,6 +10,7 @@
     "url": "https://github.com/Mordris/mermaid-generator.git"
   },
   "scripts": {
+    "setup": "git config commit.template .gitmessage",
     "start": "docker compose up -d --build",
     "stop": "docker compose down",
     "restart": "docker compose restart",

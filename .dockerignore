@@ -1,10 +1,16 @@
 .git
 .gitignore
 .gitattributes
+.gitmessage
+.github
 .claude
 node_modules
 README.md
 LICENSE
+CHANGELOG.md
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
+SECURITY.md
 docs
 Makefile
 package.json

@@ -167,3 +167,19 @@ The app is built to fail loudly but never crash:
 | `docker-compose.yml` | Runs on host port 8473 (override via `MERMAID_PORT`) |
 | `Makefile` | `make up/down/restart/rebuild/logs/ps/dev/clean` shortcuts |
 | `package.json` | `npm start/stop/restart/rebuild/logs/status/clean/dev` shortcuts |
+
+## Contributing
+
+Contributions are welcome! This project follows
+[Conventional Commits](https://www.conventionalcommits.org), squash-merged PRs,
+and automated, label-driven releases. Please read **[CONTRIBUTING.md](CONTRIBUTING.md)**
+before opening a PR, and run `npm run setup` (or `make setup`) once to load the
+commit-message template.
+
+- 🧩 [Commit template](.gitmessage) · [PR template](.github/PULL_REQUEST_TEMPLATE.md) · [Issue templates](.github/ISSUE_TEMPLATE)
+- 📓 [Changelog](CHANGELOG.md) · 🔖 [Release process](CONTRIBUTING.md#releasing-maintainers)
+- 🔒 [Security policy](SECURITY.md) · 🤝 [Code of Conduct](CODE_OF_CONDUCT.md)
+
+## License
+
+[MIT](LICENSE) © Mordris

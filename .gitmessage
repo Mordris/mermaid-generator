@@ -1,0 +1,25 @@
+# <type>(<scope>): <subject>   ── ≤ 50 chars, imperative mood, no trailing period
+#
+# ── Body ─────────────────────────────────────────────────────────────────────
+# Explain WHAT changed and WHY (not how). Wrap at 72 chars. Blank line above.
+#
+#
+# ── Footer ───────────────────────────────────────────────────────────────────
+# BREAKING CHANGE: <what breaks and the migration path>
+# Closes #<issue>   |   Refs #<issue>
+#
+# ─────────────────────────────────────────────────────────────────────────────
+# Conventional Commits — https://www.conventionalcommits.org
+#
+#   type   = feat | fix | docs | style | refactor | perf | test | build | ci
+#            | chore | revert
+#   scope  = optional area, e.g. editor, preview, export, docker, ci, deps
+#
+# Examples:
+#   feat(export): add JPEG quality slider
+#   fix(preview): stop drag from selecting SVG text
+#   docs(readme): document the run/stop commands
+#   ci(release): publish GitHub release on tag push
+#
+# A `feat` bumps the MINOR version, `fix` bumps PATCH, and a `BREAKING CHANGE`
+# footer (or `type!:`) bumps MAJOR. See CONTRIBUTING.md.
