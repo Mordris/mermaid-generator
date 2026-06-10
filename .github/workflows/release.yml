@@ -30,10 +30,31 @@ jobs:
             echo "prerelease=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Build release body from CHANGELOG
+        run: |
+          set -euo pipefail
+          VERSION="${GITHUB_REF_NAME#v}"
+          {
+            echo "## ${GITHUB_REF_NAME}"
+            echo
+            # Print the matching "## [VERSION]" section, drop reference-style
+            # link definitions, and trim leading blank lines.
+            awk -v ver="$VERSION" '
+              index($0, "## [" ver "]") == 1 { cap=1; next }
+              cap && /^## \[/ { exit }
+              cap { print }
+            ' CHANGELOG.md \
+              | grep -vE '^\[[^]]+\]:[[:space:]]*https?://' \
+              | sed -e '/./,$!d'
+          } > RELEASE_BODY.md
+          echo "----- release body -----"
+          cat RELEASE_BODY.md
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
         with:
           name: ${{ github.ref_name }}
-          generate_release_notes: true     # uses .github/release.yml categories
+          body_path: RELEASE_BODY.md       # CHANGELOG section for this version
+          generate_release_notes: true     # appends PR notes (.github/release.yml)
           prerelease: ${{ steps.meta.outputs.prerelease }}
           fail_on_unmatched_files: false
