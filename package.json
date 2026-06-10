@@ -18,6 +18,6 @@
     "logs": "docker compose logs -f",
     "status": "docker compose ps",
     "clean": "docker compose down --rmi local --remove-orphans",
-    "dev": "npx --yes http-server -p 4321 -c-1"
+    "dev": "npx --yes http-server@14.1.1 -p 4321 -c-1"
   }
 }

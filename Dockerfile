@@ -1,5 +1,5 @@
 # Mermaid Studio — static site served by nginx.
-FROM nginx:1.27-alpine
+FROM nginx:1.31-alpine
 
 # Drop the default site config and use ours.
 RUN rm -f /etc/nginx/conf.d/default.conf

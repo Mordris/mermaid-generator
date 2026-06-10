@@ -37,5 +37,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Fully client-side; diagrams are never uploaded. No secrets or backend.
 
+### Build
+- Pinned toolchain: Mermaid **11.15.0**, nginx **1.31-alpine**, `http-server`
+  **14.1.1**.
+- CI/release actions pinned to current majors (Node 24 runtime):
+  `actions/checkout@v6`, `softprops/action-gh-release@v3`,
+  `gitleaks/gitleaks-action@v3`, `amannn/action-semantic-pull-request@v6`.
+
 [Unreleased]: https://github.com/Mordris/mermaid-generator/compare/v1.0.0...HEAD
 [1.0.0]: https://github.com/Mordris/mermaid-generator/releases/tag/v1.0.0

@@ -49,7 +49,7 @@ ps: ## Show container status
 	docker compose ps
 
 dev: ## Run a static dev server without Docker (needs Node.js)
-	npx --yes http-server -p 4321 -c-1
+	npx --yes http-server@14.1.1 -p 4321 -c-1
 
 clean: ## Remove the container and built image
 	docker compose down --rmi local --remove-orphans

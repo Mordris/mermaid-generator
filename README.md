@@ -4,7 +4,7 @@ A self-contained, dark-themed web app that turns [Mermaid](https://mermaid.js.or
 code into a downloadable **PNG**, **JPEG**, or **SVG**. Everything runs in the browser — no
 backend, no uploads.
 
-![Mermaid Studio](https://img.shields.io/badge/mermaid-11-7c9eff) ![offline](https://img.shields.io/badge/runs-in--browser-56d4c4)
+![Mermaid Studio](https://img.shields.io/badge/mermaid-11.15.0-7c9eff) ![offline](https://img.shields.io/badge/runs-in--browser-56d4c4)
 
 ## Screenshots
 
@@ -93,7 +93,7 @@ It's a plain static site, so any HTTP server works (the ES-module import of Merm
 
 ```bash
 # Node
-npx http-server -p 4321 -c-1            # or:  make dev  /  npm run dev
+npx http-server@14.1.1 -p 4321 -c-1     # or:  make dev  /  npm run dev
 
 # Python 3
 python -m http.server 4321

@@ -33,10 +33,11 @@ function errMessage(err) {
 /* ----------------------------------------------------------------
    Constants / limits
 -----------------------------------------------------------------*/
+const MERMAID_VERSION = "11.15.0";
 const MERMAID_SOURCES = [
-  "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs",
-  "https://unpkg.com/mermaid@11/dist/mermaid.esm.min.mjs",
-  "https://esm.sh/mermaid@11",
+  `https://cdn.jsdelivr.net/npm/mermaid@${MERMAID_VERSION}/dist/mermaid.esm.min.mjs`,
+  `https://unpkg.com/mermaid@${MERMAID_VERSION}/dist/mermaid.esm.min.mjs`,
+  `https://esm.sh/mermaid@${MERMAID_VERSION}`,
 ];
 const RENDER_DEBOUNCE_MS = 250;
 const RENDER_TIMEOUT_MS = 20000;
